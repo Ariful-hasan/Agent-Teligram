@@ -1,12 +1,14 @@
+const credentials = require('../util/credentials');
 
 exports.chatGet = (req, res, next)=>{
     data = {}
     data.pageTitle = "Chat";
     data.errors = [];
+    data.chatUrl = credentials.chatUrl;
 
     let userid = req.user;
-    console.log('it is called....');
-    console.log(userid);
+    // console.log('it is called....');
+    // console.log(userid);
     res.render('chat-form', {userid: userid, data: data});
 }
 

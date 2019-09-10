@@ -1,58 +1,59 @@
 
-        
-        <div class="row">
-            <div class="offset-md-2 col-md-8">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="col-md-6">Chat</div>
-                        <div class="col-md-6"><a class="pull-right" href="/logout">Log Out</a></div>
+    <div class="row">
+        <div class="offset-md-2 col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-md-6">Chat</div>
+                    <div class="col-md-6"><a class="pull-right" href="/logout">Log Out</a></div>
+                </div>
+                <div class="card-body">
+
+                    <% if (userid) { %>
+                    <div class="alert alert-info alert-dismissible fade show invisible" role="alert" id="alert">
+                        <strong id="connection_msg"></strong>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
                     </div>
-                    <div class="card-body">
 
-                        <% if (userid) { %>
-                        <div class="alert alert-info alert-dismissible fade show invisible" role="alert" id="alert">
-                            <strong id="connection_msg"></strong>
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                                    aria-hidden="true">&times;</span></button>
-                        </div>
-
-                        <div class="col-md-12 invisible">
-                            <div class="card">
-                                <div class="card-body">
-                                    <ul id="msg_list"></ul>
-                                </div>
+                    <div class="col-md-12 invisible">
+                        <div class="card">
+                            <div class="card-body">
+                                <ul id="msg_list"></ul>
                             </div>
                         </div>
-
-                        <div class="col-md-12">
-                            <form action="" method="POST">
-                                <div class="input-group mb-3">
-                                    <input type="text" class="form-control" placeholder="message" aria-label="message"
-                                        id="message" aria-describedby="basic-addon2">
-                                    <div class="input-group-append">
-                                        <button class="btn btn-outline-info" type="submit">Send</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <% } %>
-
                     </div>
+
+                    <div class="col-md-12 mb-0">
+                        <form action="" method="POST">
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" placeholder="message" aria-label="message"
+                                    id="message" aria-describedby="basic-addon2">
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-info" type="submit">Send</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <% } %>
+
                 </div>
             </div>
         </div>
+    </div>
 
+    <script src="/socket.io/socket.io.js"></script>
     <script>
 
         $(function () {
             
             <% if (userid) { %>
 
-                let socket = io('http://localhost:4444');
+                let chatUrl = "<%= typeof data.chatUrl != 'undefined' ? data.chatUrl : '' %>";
+                let socket = io(chatUrl);
 
                 socket.on('connect', () => {
                     console.log(socket.connected); // true
-                    socket.emit("join", "Hello server from client");
+                    socket.emit("chat-join", "Hello server from client");
                 });
                 socket.on('server msg', (data) => {
                     console.log(data);
