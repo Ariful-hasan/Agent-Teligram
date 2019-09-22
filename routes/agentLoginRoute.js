@@ -3,8 +3,7 @@ const router = express.Router();
 const { forwardAuthenticated } = require('../util/auth');
 const loginController = require('../controllers/loginController');
 
-router.get('/', forwardAuthenticated, loginController.getLogin);
-// router.get('/agent/', forwardAuthenticated, loginController.getAgentLogin);
-router.post('/', loginController.postLogin);
+router.get('/login', forwardAuthenticated, loginController.getAgentLogin);
+router.post('/login', loginController.postAgentLogin);
 
 module.exports = router;

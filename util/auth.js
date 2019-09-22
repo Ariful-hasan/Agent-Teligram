@@ -4,7 +4,7 @@ module.exports = {
             return next();
         }
         req.flash('error_msg', 'Please log in.');
-        res.redirect('/login');
+        res.redirect('/agent/login');
     },
 
     forwardAuthenticated: function(req, res, next) {

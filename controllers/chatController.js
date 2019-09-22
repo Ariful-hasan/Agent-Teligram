@@ -5,11 +5,15 @@ exports.chatGet = (req, res, next)=>{
     data.pageTitle = "Chat";
     data.errors = [];
     data.chatUrl = credentials.chatUrl;
+    data.userid = req.user._id;
+    data.utype = req.user.type;
+    data.name = req.user.name;
 
-    let userid = req.user;
-    // console.log('it is called....');
-    // console.log(userid);
-    res.render('chat-form', {userid: userid, data: data});
+    req.session.user = req.user;
+    // console.log(req.user);
+    // console.log(data);
+    // console.log(req.user.type);
+    res.render('chat-form', {data: data});
 }
 
 exports.chatPost = (req, res, next)=> {

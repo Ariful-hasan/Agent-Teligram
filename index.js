@@ -10,16 +10,12 @@ const ejsLayouts = require('express-ejs-layouts');
 const flash = require('connect-flash-plus');
 const passport = require('passport');
 const dbkey = require('./util/credentials').mongoKey;
-
+const masterRoute = require('./routes/masterRoute');
 const socketIO = require('socket.io');
 const io = socketIO(server);
 require('./socket/chat-engine')(app, io);
 require('./util/passport')(passport);
 
-const masterRoute = require('./routes/masterRoute');
-// const chatRoute = require('./routes/chatRoute');
-// const loginRoute = require('./routes/loginRoute');
-// const logoutRoute = require('./routes/logoutRoute');
 
 
 /**
@@ -27,6 +23,7 @@ const masterRoute = require('./routes/masterRoute');
  * !if needed then use.
  */
 app.set('socketio', io);
+
 app.use(ejsLayouts);
 app.set('view engine', 'ejs');
 app.set('views', 'views');
@@ -37,8 +34,8 @@ app.use(cookieParser());
 app.use(session ({
     key: 'user_sid',
     secret: 'somerandonstuffs',
-    resave: false,
-    saveUninitialized: false,
+    resave: true,
+    saveUninitialized: true,
     cookie: {
         expires: 600000
     }
@@ -74,9 +71,6 @@ app.use('/', (req, res)=> {
     data.pageTitle = "page not found";
     res.render('404', {data: data});
 });
-// app.use('/login', loginRoute);
-// app.use('/logout', logoutRoute);
-// app.use('/chat',  chatRoute);
 
 
 //* Database connection

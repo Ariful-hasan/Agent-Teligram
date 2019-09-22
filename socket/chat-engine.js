@@ -5,7 +5,16 @@ module.exports = (app, io) => {
     io.on("connection", (client)=> {
       let clientID = client.id;
       let client_browser_info = useragent.parse(client.handshake.headers['user-agent']);
-      console.log(app);
+
+      //console.log(userinfo);
+      
+      
+      client.on('setSocketId', function(data) {
+        var userName = data.name;
+        var userId = data.userId;
+        //console.log(userName);
+      });
+      console.log('after.....');
 
         client.on("chat-join", (data) => {
           //console.log(data);
@@ -14,7 +23,7 @@ module.exports = (app, io) => {
         //client.join('some room');
 
         client.on("chat message", (msg) => {
-            console.log(msg);
+            //console.log(msg);
             io.to(clientID).emit("s_msg", "Your are successfully connected !!");
         });
       });
