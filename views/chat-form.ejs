@@ -6,7 +6,7 @@
                 <div class="card card-info">
                     <div class="card-header">User in List</div>
                     <div class="card-body">
-
+                        <ul id="logged_users"></ul>
                     </div>
                 </div>
             </div>
@@ -42,7 +42,7 @@
                                 <input type="text" class="form-control" placeholder="message" aria-label="message"
                                     id="message" aria-describedby="basic-addon2">
                                 <div class="input-group-append">
-                                    <button class="btn btn-outline-info" type="submit">Send</button>
+                                    <button class="btn btn-outline-info" type="button" id="send">Send</button>
                                 </div>
                             </div>
                         </form>
@@ -57,35 +57,61 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
 
-        $(function () {
-            
-            <% if (data.userid) { %>
+        $(function () { 
 
                 let chatUrl = "<%= typeof data.chatUrl != 'undefined' ? data.chatUrl : '' %>";
                 let socket = io(chatUrl);
+                let user = {};
+                user.user_id = '<%= data.userid %>';
+                user.name = '<%= data.name %>';
 
-                socket.on('connect', () => {
-                    console.log(socket.connected); // true
-                    socket.emit("chat-join", "Hello server from client");
-                });
-                socket.on('server msg', (data) => {
-                    console.log(data);
-                });
-                socket.on('s_msg', (data) => {
-                    $("#connection_msg").html(data);
-                    $("#alert").removeClass('invisible');
-                    $("#alert").addClass('visible');
+                socket.on('connect', () => {  
+                    <% if (data.type == "U") { %>
+                        socket.emit("chat_join", user);
+                    <% } %>
                 });
 
-                $('form').submit(function (e) {
+                <% if (data.type == "A") { %>
+                    let user_list = {};
+                    socket.on('logged_user', (data) => {
+                        if (!user_list[data.id]) {
+                            user_list[data.id] = data.name;
+                        }
+                        console.log(user_list);
+                        setLoggedUser(user_list);
+                    });
+                <% } %>
+                // socket.on('server msg', (data) => {
+                //     console.log(data);
+                // });
+                // socket.on('s_msg', (data) => {
+                //     $("#connection_msg").html(data);
+                //     $("#alert").removeClass('invisible');
+                //     $("#alert").addClass('visible');
+                // });
+
+                $('#send').click(function (e) {
+                    alert('hiiii');
                     e.preventDefault();
                     socket.emit('chat message', $('#message').val());
                     $('#message').val('');
                     return false;
                 });
 
-            <% } %>
+            
 
         });
+
+        let setLoggedUser = (data) => {
+            if (typeof data !== 'undefined'){
+                for (let key in data){
+                    let li = "";
+                    li += "<li id='"+key+"'>"+data[key]+"</li>";
+                    $("#logged_users").append(li);
+                    console.log(key);
+                    console.log(data[key]);
+                }
+            }
+        };
     </script>
  

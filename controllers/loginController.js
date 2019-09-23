@@ -48,9 +48,10 @@ exports.postAgentLogin = (req, res, next) => {
 
 
 exports.getLogout = (req, res) => {
+    let type = req.user.type;
     req.logout();
     req.flash('success_msg', 'You are logged out');
-    if (req.user.type == "A")
+    if (type == "A")
         res.redirect('/agent/login');
     res.redirect('/login');
 }

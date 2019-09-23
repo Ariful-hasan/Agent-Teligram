@@ -31,7 +31,7 @@ exports.chatUser = (req, res, next)=>{
     data.pageTitle = "Chat";
     data.chat_id = req.session.chat_id;
     
-    console.log(data);
+    //console.log(data);
     res.render('chat-form', {data: data});
 }
 

@@ -5,22 +5,27 @@ module.exports = (app, io) => {
     io.on("connection", (client)=> {
       let clientID = client.id;
       let client_browser_info = useragent.parse(client.handshake.headers['user-agent']);
+      let user_info = {
+        "id"  : "",
+        "name": ""
+      };
 
-      //console.log(userinfo);
-      
-      
       client.on('setSocketId', function(data) {
         var userName = data.name;
         var userId = data.userId;
         //console.log(userName);
       });
-      console.log('after.....');
 
-        client.on("chat-join", (data) => {
-          //console.log(data);
+        client.on("chat_join", (data) => {
+          user_info.id = data.user_id;
+          user_info.name = data.name;
+          console.log(data);
+          
+          client.broadcast.emit("logged_user", user_info);
         });
 
-        //client.join('some room');
+        
+      
 
         client.on("chat message", (msg) => {
             //console.log(msg);
