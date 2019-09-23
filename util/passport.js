@@ -83,10 +83,8 @@ module.exports = (passport) => {
         done(null, user);
       });
     passport.deserializeUser((user, done) => {
-        //console.log(user);
         let mod = user.type == "A" ? Agent : User;
         mod.findById(user._id, (err, user) => {  
-            console.log(user);
           done(err, user);
         });
       });

@@ -1,5 +1,8 @@
 const passport = require('passport');
 
+/**
+ * Login For User
+ */
 exports.getLogin = (req, res, next) => {
     data = {}
     data.pageTitle = "Login";
@@ -7,7 +10,6 @@ exports.getLogin = (req, res, next) => {
     data.type = "U";
     res.render('login-form', {data: data});
 }
-
 exports.postLogin = (req, res, next) => {
     /**
      * *working on Anonymous Login.
