@@ -1,5 +1,5 @@
-// const chatController = require('../controllers/chatController');
 const useragent = require('useragent');
+const OnlineUser = require('../models/onlineuserModel');
 
 module.exports = (app, io) => {
     io.on("connection", (client)=> {
@@ -19,14 +19,31 @@ module.exports = (app, io) => {
         client.on("chat_join", (data) => {
           user_info.id = data.user_id;
           user_info.name = data.name;
-          console.log(data);
           
           client.broadcast.emit("logged_user", user_info);
+
+          OnlineUser.findOne({userid: data.user_id})
+          .then(user => {
+            //console.log(data);
+            if (!user){
+                new OnlineUser({
+                  name: data.name,
+                  userid: data.user_id,
+                }).save(err => {
+                  if (err){
+                    console.log(err);
+                  }else {
+                    console.log("online data save");
+                  }
+                })
+            }
+          })
+          .catch (err => {
+            console.log(err);
+          })
         });
 
         
-      
-
         client.on("chat message", (msg) => {
             //console.log(msg);
             io.to(clientID).emit("s_msg", "Your are successfully connected !!");

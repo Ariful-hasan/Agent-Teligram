@@ -52,6 +52,6 @@ exports.getLogout = (req, res) => {
     req.logout();
     req.flash('success_msg', 'You are logged out');
     if (type == "A")
-        res.redirect('/agent/login');
-    res.redirect('/login');
+        return res.redirect('/agent/login');
+    return res.redirect('/login');
 }
