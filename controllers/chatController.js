@@ -1,6 +1,7 @@
 const credentials = require('../util/credentials');
 const uuidv5 = require('uuid/v5');
 const OnlineUsers = require('../models/onlineuserModel');
+const Chat = require('../models/chatModel');
 
 exports.index = (req, res, next) => {
     if (req.user.type == "A")
@@ -28,7 +29,8 @@ exports.chatUser = (req, res, next)=>{
     let data = exports.getUserData(req, res);
 
     req.session.user = req.user;
-    req.session.chat_id = req.session.chat_id || uuidv5(req.user._id + now.getMilliseconds, credentials.uuid_namespace);
+    // req.session.chat_id = req.session.chat_id || uuidv5(req.user._id + now.getMilliseconds, credentials.uuid_namespace);
+    req.session.room_id = req.session.user._id;
     
     data.pageTitle = "Chat";
     data.chat_id = req.session.chat_id;
@@ -62,12 +64,27 @@ exports.chatAgent =  async (req, res, next) => {
 
     data.onlineusers = onlineusers;
     data.pageTitle = "Chat";
-    console.log(data.onlineusers);
-    await res.render('chat-form', {data: data});
+    //console.log(data.onlineusers);
+    res.render('chat-form', {data: data});
 }
 
 exports.chatPost = (req, res, next)=> {
     let userid = req.session.user;
     //next();
     res.render('chat-form', {userid: userid});  
+}
+
+exports.clientChatHistory = async (req, res, next) => {
+    console.log(req.params.uid);
+    let chat_id = req.params.uid;
+    let response = await Chat.find(
+        {"chat_id": chat_id}
+    )
+    .then(messages => {
+        return messages;
+    })
+    .catch(err => console.log(err));
+    console.log(response);
+    res.json({response});
+    // process.exit;
 }

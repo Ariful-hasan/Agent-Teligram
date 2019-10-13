@@ -4,8 +4,6 @@
     .cursor{cursor: pointer;}
 </style>
 
-<%= JSON.stringify(data.onlineusers) %>
-
 <div class="row">
 
         <% if (data.type == "A") { %>
@@ -29,7 +27,11 @@
                 <div class="card-header">
                     <div class="row">
                             <div class="col-md-6"><%= data.name%></div>
-                            <div class="col-md-6"><a class="float-right" href="/logout">Log Out</a></div>
+                            <% if (data.type == "U") { %>
+                                <div class="col-md-6"><a class="float-right" onclick="sendDisconnect(<%= data.userid %>)" href="/logout">Log Out</a></div>
+                            <% } else { %>
+                                <div class="col-md-6"><a class="float-right" href="/logout">Log Out</a></div>
+                            <% } %>
                     </div>
                 </div>
                 <div class="card-body">
@@ -41,10 +43,12 @@
                                 aria-hidden="true">&times;</span></button>
                     </div> -->
 
-                    <div class="col-md-12 invisible">
+                    <div class="col-md-12 mb-1">
                         <div class="card">
                             <div class="card-body">
-                                <ul id="msg_list"></ul>
+                                <div >
+                                    <div id="msg_list"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -70,74 +74,150 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
 
+
+        let socket = {};
+        let user = {};
+        let room = '';
+
         $(function () { 
 
                 let chatUrl = "<%= typeof data.chatUrl != 'undefined' ? data.chatUrl : '' %>";
                 //let socket = io(chatUrl);
-                let socket = io();
-                let user = {};
+                
+                socket = io();
+                //let user = {};
                 user.user_id = '<%= data.userid %>';
                 user.name = '<%= data.name %>';
+                user.msg = '';
+                let type = '<%- data.type %>';
+                room = '<%= data.type == "U" ? data.userid : "" %>';
+                
+                
 
                 socket.on('connect', () => {  
                     <% if (data.type == "U") { %>
-                        socket.emit("chat_join", user);
+                        socket.emit("chat_join", user.user_id, user.name);
+                    <% } else { %>
+                        socket.emit('get_online_users');
                     <% } %>
                 });
-
+               
+                
                 <% if (data.type == "A") { %>
-
-                    let user_list = {};
-                    let onlineusers = '<%- JSON.stringify(data.onlineusers) %>';
-
-                    if (typeof onlineusers !== 'undefined' && onlineusers.length > 0){
-                        JSON.parse(onlineusers).forEach(function(u){
-                            if (!user_list[u.id]) {
-                                user_list[u.id] = u.name;
-                            }
-                        }); 
-                    }
-                    setLoggedUser(user_list);
+                    
+                    // let user_list = {};
+                    // let onlineusers = '<%- JSON.stringify(data.onlineusers) %>';
+                    // if (typeof onlineusers !== 'undefined' && onlineusers.length > 0){
+                    //     JSON.parse(onlineusers).forEach(function(u){
+                    //         if (!user_list[u.id]) {
+                    //             user_list[u.id] = u.name;
+                    //         }
+                    //     }); 
+                    // }
+                    //setLoggedUser(user_list);
                     socket.on('logged_user', (data) => {
-                        if (!user_list[data.id]) {
-                            user_list[data.id] = data.name;
-                        }
-                        console.log(user_list);
-                        setLoggedUser(user_list);
+                        //console.log(data);
+                        setLoggedUser(data);
+                    });
+
+                    socket.on('online_users', (data) => {
+                        console.log(data);
+                        setLoggedUser(data); 
                     });
                 <% } %>
-                // socket.on('server msg', (data) => {
-                //     console.log(data);
-                // });
-                // socket.on('s_msg', (data) => {
-                //     $("#connection_msg").html(data);
-                //     $("#alert").removeClass('invisible');
-                //     $("#alert").addClass('visible');
-                // });
+
+                socket.on('test', (data) => {
+                    console.log(data);
+                });
+                
+                socket.on('chat_message', (msg) => {
+                    console.log(msg);
+                    $("#msg_list").append('<li>'+msg+'</li>');
+                });
 
                 $('#send').click(function (e) {
-                    alert('hiiii');
                     e.preventDefault();
-                    socket.emit('chat message', $('#message').val());
+                    user.msg = $('#message').val();
+                    $("#msg_list").append('<li>'+user.msg+'</li>');
+                    socket.emit('send_chat_message', room, user);
                     $('#message').val('');
                     return false;
                 });
-
-            
-
         });
 
+        function setChatWindos(element){
+            //alert($(element).attr('id'));
+            room = $(element).attr('id');
+            socket.emit('agent_connect', room, user.name);
+            $("#msg_list").empty();
+            $.ajax({
+                dataType    : "JSON",
+                type        : "POST",
+                url         : "/chat/chat-history/"+room,
+                success     : function(res) {
+                    
+                    if (typeof res.response !== 'undefined' && Object.keys(res.response).length > 0) {
+                        console.log(res.response);
+                        res.response.forEach(element => {
+                            // $("#msg_list").append('<div class="col-3">'+element.name+'</div><div class="col-9">'+element.body+'</div>');
+                            //$("#msg_list").append('<div class="col-3">'+element.name+'</div><div class="col-9">'+element.body+'</div>');
+                            appendMsg(element);
+                        });
+                    }
+                }
+            });
+        } 
+
         let setLoggedUser = (data) => {
-            if (typeof data !== 'undefined'){
+            //console.log(data);
+            $("#logged_users").empty();
+            if (typeof data !== 'undefined' && data !== null){
                 for (let key in data){
                     if ($("#"+key).length == 0){
-                        let div = '<div class="col-12 pl-0 pr-0 cursor" id="'+key+'">';
+                        let div = '<div class="col-12 pl-0 pr-0 cursor" id="'+key+'" onclick="setChatWindos(this)">';
                         div += '<div class="col-10 pl-0 pr-0"><span><i class="fa fa-user-circle-o text-success" aria-hidden="true"></i></span> '+data[key]+'</div>';
                         div += '</div>';
                         $("#logged_users").append(div);
                     }
                 }
             }
+        };
+
+
+        let sendDisconnect = (room) => {
+            //console.log(userid);
+            socket.emit('disconnect_chat',room);
+        };
+
+        let appendMsg = (element) => {
+            console.log(element);
+            
+            let txt_algn = user.user_id==element.userid ? "true" : "";
+            
+            let msgbox = '<div class="card mb-1">';
+            msgbox += '<div class="card-body pr-0">';
+            msgbox += '<div class="row">';
+            if (txt_algn) {
+                msgbox += '<div class="col-9 text-right">';
+                msgbox += element.body;
+                msgbox += '</div>';
+
+                msgbox += '<div class="col-3 text-right">';
+                msgbox += element.name;
+                msgbox += ':</div>';
+            } else {
+                msgbox += '<div class="col-2 text-left">';
+                msgbox += element.name;
+                msgbox += ':</div>';
+
+                msgbox += '<div class="col-10 text-left">';
+                msgbox += element.body;
+                msgbox += '</div>';
+            }    
+            msgbox += '</div>';
+            msgbox += '</div>';
+
+            $("#msg_list").append(msgbox);
         };
     </script>
  

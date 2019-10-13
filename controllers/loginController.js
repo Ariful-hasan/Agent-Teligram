@@ -48,7 +48,7 @@ exports.postAgentLogin = (req, res, next) => {
 
 
 exports.getLogout = (req, res) => {
-    let type = req.user.type;
+    let type = req.session.user.type || "U";
     req.logout();
     req.flash('success_msg', 'You are logged out');
     if (type == "A")

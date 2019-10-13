@@ -28,7 +28,7 @@ app.use(ejsLayouts);
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
-app.use(express.static('public'))
+app.use(express.static('public'));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(session ({
@@ -36,9 +36,9 @@ app.use(session ({
     secret: 'somerandonstuffs',
     resave: true,
     saveUninitialized: true,
-    cookie: {
-        expires: 600000
-    }
+    // cookie: {
+    //     expires: 600000
+    // }
 }));
 app.use(flash());
 
@@ -76,9 +76,14 @@ app.use('/', (req, res)=> {
 //* Database connection
 mongoose.connect(dbkey, {useNewUrlParser: true})
 .then( client => {
+    if (client)
     console.log('mongoose connected!!');
+    else 
+    console.log('mongoose not connected!!');
+    
 })
 .catch(err => {
+    console.log('mongo not connected!!!!'); 
     console.log(err); 
 });
 
