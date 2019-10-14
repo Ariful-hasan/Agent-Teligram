@@ -2,6 +2,21 @@
 
 <style>
     .cursor{cursor: pointer;}
+    .bg-light-gray{background-color: #ddd}
+    .bg-dark-gray{background-color: #f1f1f1}
+    .name {
+            height: 40px;
+            width: 40px;
+            background-color: #bbb;
+            border-radius: 50%;
+            display: inline-block;
+            text-align: center;
+            line-height: 2.3;
+        }
+        .mtn-1{margin-top: 1%;}
+        .msg-field { /* height: 40px;  */}
+        .window-height{height: 99vh;}
+        #msg_list{overflow: auto;}
 </style>
 
 <div class="row">
@@ -23,7 +38,7 @@
 
 
         <div class=" <%= data.type == 'U'? 'offset-md-2' : '' %> col-md-8">
-            <div class="card">
+            <div class="card window-height" id="chat_window">
                 <div class="card-header">
                     <div class="row">
                             <div class="col-md-6"><%= data.name%></div>
@@ -34,15 +49,10 @@
                             <% } %>
                     </div>
                 </div>
-                <div class="card-body">
+                <div class="card-body" sty>
 
                     <% if (data.userid) { %>
-                    <!-- <div class="alert alert-info alert-dismissible fade show invisible" role="alert" id="alert">
-                        <strong id="connection_msg"></strong>
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                                aria-hidden="true">&times;</span></button>
-                    </div> -->
-
+                   
                     <div class="col-md-12 mb-1">
                         <div class="card">
                             <div class="card-body">
@@ -53,11 +63,11 @@
                         </div>
                     </div>
 
-                    <div class="col-md-12 mb-0">
+                    <div class="col-md-12 msg-field">
                         <form action="" method="POST">
                             <div class="input-group mb-3">
-                                <input type="text" class="form-control" placeholder="message" aria-label="message"
-                                    id="message" aria-describedby="basic-addon2">
+                                <textarea type="text" class="form-control" placeholder="message" aria-label="message"
+                                    id="message" aria-describedby="basic-addon2"></textarea>
                                 <div class="input-group-append">
                                     <button class="btn btn-outline-info" type="button" id="send">Send</button>
                                 </div>
@@ -81,22 +91,20 @@
 
         $(function () { 
 
+                $("#msg_list").height($("#chat_window").height()-200);
+
                 let chatUrl = "<%= typeof data.chatUrl != 'undefined' ? data.chatUrl : '' %>";
                 //let socket = io(chatUrl);
-                
                 socket = io();
-                //let user = {};
-                user.user_id = '<%= data.userid %>';
+                user.userid = '<%= data.userid %>';
                 user.name = '<%= data.name %>';
                 user.msg = '';
                 let type = '<%- data.type %>';
                 room = '<%= data.type == "U" ? data.userid : "" %>';
                 
-                
-
                 socket.on('connect', () => {  
                     <% if (data.type == "U") { %>
-                        socket.emit("chat_join", user.user_id, user.name);
+                        socket.emit("chat_join", user.userid, user.name);
                     <% } else { %>
                         socket.emit('get_online_users');
                     <% } %>
@@ -104,41 +112,28 @@
                
                 
                 <% if (data.type == "A") { %>
-                    
-                    // let user_list = {};
-                    // let onlineusers = '<%- JSON.stringify(data.onlineusers) %>';
-                    // if (typeof onlineusers !== 'undefined' && onlineusers.length > 0){
-                    //     JSON.parse(onlineusers).forEach(function(u){
-                    //         if (!user_list[u.id]) {
-                    //             user_list[u.id] = u.name;
-                    //         }
-                    //     }); 
-                    // }
-                    //setLoggedUser(user_list);
                     socket.on('logged_user', (data) => {
-                        //console.log(data);
                         setLoggedUser(data);
                     });
 
                     socket.on('online_users', (data) => {
-                        console.log(data);
+                        //console.log(data);
                         setLoggedUser(data); 
                     });
                 <% } %>
 
-                socket.on('test', (data) => {
-                    console.log(data);
-                });
+                // socket.on('test', (data) => {
+                //     console.log(data);
+                // });
                 
-                socket.on('chat_message', (msg) => {
-                    console.log(msg);
-                    $("#msg_list").append('<li>'+msg+'</li>');
+                socket.on('chat_message', (user) => {
+                    appendMsg(user);
                 });
 
                 $('#send').click(function (e) {
                     e.preventDefault();
-                    user.msg = $('#message').val();
-                    $("#msg_list").append('<li>'+user.msg+'</li>');
+                    user.body = $('#message').val();
+                    appendMsg(user);
                     socket.emit('send_chat_message', room, user);
                     $('#message').val('');
                     return false;
@@ -146,7 +141,6 @@
         });
 
         function setChatWindos(element){
-            //alert($(element).attr('id'));
             room = $(element).attr('id');
             socket.emit('agent_connect', room, user.name);
             $("#msg_list").empty();
@@ -155,12 +149,9 @@
                 type        : "POST",
                 url         : "/chat/chat-history/"+room,
                 success     : function(res) {
-                    
                     if (typeof res.response !== 'undefined' && Object.keys(res.response).length > 0) {
                         console.log(res.response);
                         res.response.forEach(element => {
-                            // $("#msg_list").append('<div class="col-3">'+element.name+'</div><div class="col-9">'+element.body+'</div>');
-                            //$("#msg_list").append('<div class="col-3">'+element.name+'</div><div class="col-9">'+element.body+'</div>');
                             appendMsg(element);
                         });
                     }
@@ -169,7 +160,6 @@
         } 
 
         let setLoggedUser = (data) => {
-            //console.log(data);
             $("#logged_users").empty();
             if (typeof data !== 'undefined' && data !== null){
                 for (let key in data){
@@ -185,38 +175,55 @@
 
 
         let sendDisconnect = (room) => {
-            //console.log(userid);
             socket.emit('disconnect_chat',room);
         };
 
         let appendMsg = (element) => {
-            console.log(element);
+            // console.log(typeof element.date);
+            let txt_algn = user.userid==element.userid ? "true" : "";
+            let name_ary= element.name.split(" ");
+            let nick = name_ary[0][0] + name_ary[1][0];
             
-            let txt_algn = user.user_id==element.userid ? "true" : "";
-            
-            let msgbox = '<div class="card mb-1">';
-            msgbox += '<div class="card-body pr-0">';
-            msgbox += '<div class="row">';
+            let msgbox = '';
             if (txt_algn) {
-                msgbox += '<div class="col-9 text-right">';
+                msgbox = '<div class="card bg-light-gray mb-2">';
+                msgbox += '<div class="card-body">';
+                msgbox += '<div class="row inline">';
+
+                msgbox += '<div class="col-11 text-right">';
                 msgbox += element.body;
+                msgbox += '<small class="form-text text-muted mb-0">'+element.date+'</small>';
+                msgbox += '</div>';
+                
+                msgbox += '<div class="col-1 text-right">';
+                msgbox += '<div class="name bg-secondary text-white mtn-1">';
+                //msgbox += element.name;
+                msgbox += nick;
+                msgbox += '</div>';
                 msgbox += '</div>';
 
-                msgbox += '<div class="col-3 text-right">';
-                msgbox += element.name;
-                msgbox += ':</div>';
+                msgbox += '</div>';
+                msgbox += '</div>';
             } else {
-                msgbox += '<div class="col-2 text-left">';
-                msgbox += element.name;
-                msgbox += ':</div>';
+                msgbox = '<div class="card bg-dark-gray other mb-1">';
+                msgbox += '<div class="card-body">';
+                msgbox += '<div class="row">';
 
-                msgbox += '<div class="col-10 text-left">';
+                msgbox += '<div class="col-1 text-left">';
+                //msgbox += element.name;
+                msgbox += '<div class="name bg-info text-white">';
+                msgbox += nick;
+                msgbox += '</div>';
+                msgbox += '</div>';
+
+                msgbox += '<div class="col-11 text-left">';
                 msgbox += element.body;
+                msgbox += '<small class="form-text text-muted mb-0">'+element.date+'</small>';
+                msgbox += '</div>';
+
+                msgbox += '</div>';
                 msgbox += '</div>';
             }    
-            msgbox += '</div>';
-            msgbox += '</div>';
-
             $("#msg_list").append(msgbox);
         };
     </script>

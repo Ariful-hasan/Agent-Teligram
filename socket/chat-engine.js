@@ -67,12 +67,12 @@ module.exports = (app, io) => {
             //   console.log(clients); // an array containing socket ids in 'room3'
             // });
             // io.to(room).emit("chat_message", msg);
-            client.broadcast.to(room).emit("chat_message", user.msg);
+            client.broadcast.to(room).emit("chat_message", user);
             
             let chat = new Chat({
               chat_id: room,
-              userid: user.user_id,
-              body: user.msg,
+              userid: user.userid,
+              body: user.body,
               name: user.name
             });
             chat.save(err => {

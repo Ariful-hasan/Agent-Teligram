@@ -81,10 +81,23 @@ exports.clientChatHistory = async (req, res, next) => {
         {"chat_id": chat_id}
     )
     .then(messages => {
-        return messages;
+        let result = [];
+        if (messages){
+            messages.forEach(message => {
+                let obj = {};
+                obj.date = message.date.toISOString().replace(/T/, ' ').replace(/\..+/, '');;
+                obj.name = message.name;
+                obj.userid = message.userid;
+                obj._id = message._id;
+                obj.chat_id = message.chat_id;
+                obj.body = message.body;
+                result.push(obj);
+            })
+        }
+        return result;
     })
     .catch(err => console.log(err));
-    console.log(response);
+    //console.log(response);
     res.json({response});
     // process.exit;
 }
