@@ -61,12 +61,7 @@ module.exports = (app, io) => {
 
         
         client.on("send_chat_message", (room, user) => {
-            console.log(user);
-            // console.log(room);
-            // io.in(room).clients((err, clients) => {
-            //   console.log(clients); // an array containing socket ids in 'room3'
-            // });
-            // io.to(room).emit("chat_message", msg);
+            user.date = new Date();
             client.broadcast.to(room).emit("chat_message", user);
             
             let chat = new Chat({
@@ -103,6 +98,10 @@ module.exports = (app, io) => {
           //console.log(room);
           client.join(room);
           io.to(room).emit('test', 'agent connected!!!!');
+        });
+
+        client.on("typing", (room, data) => {
+            client.to(room).emit('typing', data);
         });
 
       });

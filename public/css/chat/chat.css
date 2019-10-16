@@ -1,0 +1,15 @@
+.cursor{cursor: pointer;}
+    .bg-light-gray{background-color: #ddd}
+    .bg-dark-gray{background-color: #f1f1f1}
+    .name {
+            height: 40px;
+            width: 40px;
+            background-color: #bbb;
+            border-radius: 50%;
+            display: inline-block;
+            text-align: center;
+            line-height: 2.3;
+        }
+    .mtn-1{margin-top: 1%;}
+    .window-height{height: 99vh;}
+    #msg_list{overflow: auto;}

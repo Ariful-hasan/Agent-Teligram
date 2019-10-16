@@ -85,7 +85,8 @@ exports.clientChatHistory = async (req, res, next) => {
         if (messages){
             messages.forEach(message => {
                 let obj = {};
-                obj.date = message.date.toISOString().replace(/T/, ' ').replace(/\..+/, '');;
+                //obj.date = message.date.toISOString().replace(/T/, ' ').replace(/\..+/, '');;
+                obj.date = message.date;
                 obj.name = message.name;
                 obj.userid = message.userid;
                 obj._id = message._id;
