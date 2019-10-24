@@ -4,6 +4,7 @@ const Chat = require('../models/chatModel');
 const rooms = { };
 
 module.exports = (app, io) => {
+    // let vclients = 0;
     io.on("connection", (client)=> {
       let clientID = client.id;
       let client_browser_info = useragent.parse(client.handshake.headers['user-agent']);
@@ -11,7 +12,6 @@ module.exports = (app, io) => {
         "id"  : "",
         "name": ""
       };
-
 
       client.on('error', (error) => {
         console.log(error);
@@ -26,7 +26,7 @@ module.exports = (app, io) => {
         client.on("chat_join", (room, name) => {
           user_info.id = room;
           // user_info.name = data.name;
-          
+          console.log(name);
           if (rooms[room] != null){
               return false;
           }
@@ -104,5 +104,34 @@ module.exports = (app, io) => {
             client.to(room).emit('typing', data);
         });
 
+
+
+
+        /**
+         * Video Calll 
+         */
+        client.on("new_video_client", (room, type) => {
+          console.log('new_video_client : '+room);
+          console.log(type);
+          //io.to(room).emit("CreatePeer", type);
+          client.emit('CreatePeer', type);
+        });
+        client.on("Offer", (room, offer) => {
+          console.log('OFFER : '+room);
+          client.to(room).emit("BackOffer", offer)
+        });
+        client.on('Answer', (room, data) => {
+          console.log('ANSWER : '+data);
+          client.to(room).emit("BackAnswer", data);
+        });
+        client.on('ready_client', (room) => {
+          console.log('ready_client : '+room);
+          client.to(room).emit("open_video_window");
+        });
+        client.on('video_request', (room) => {
+          console.log('video_request : '+room);
+          client.to(room).emit("start_video");
+        });
+      
       });
 }

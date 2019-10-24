@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "watch": "npx watchify ./public/js/video.js -o ./public/js/video.bundle.js"
   },
   "author": "appsbd",
   "license": "ISC",
@@ -23,12 +24,14 @@
     "mongoose": "^5.6.11",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
+    "simple-peer": "^9.6.0",
     "socket.io": "^2.2.0",
     "socket.io-client": "^2.2.0",
     "useragent": "^2.3.0",
     "uuid": "^3.3.3"
   },
   "devDependencies": {
-    "nodemon": "^1.19.1"
+    "nodemon": "^1.19.1",
+    "watchify": "^3.11.1"
   }
 }

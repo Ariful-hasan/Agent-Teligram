@@ -1,3 +1,31 @@
+$("#msg_list").height($("#chat_window").height()-120);
+
+$("#v_btn").on('click', () => {
+    startVideo();
+    if ($("#v_window").hasClass('invisible')) {
+        $("#v_window").removeClass('invisible');
+    }
+    socket.emit('video_request', room);
+});
+
+socket.on('connect', () => {  
+    socket.emit('get_online_users');
+});
+
+socket.on('logged_user', (data) => {
+    setLoggedUser(data);
+});
+
+socket.on('online_users', (data) => {
+    setLoggedUser(data); 
+});
+
+let showAgentVideoContent = (openVideoWindow = false) => {
+    if ($("#v_btn").hasClass('invisible')) {
+        $("#v_btn").removeClass('invisible');
+    }
+};
+
 function setChatWindos(element){
     room = $(element).attr('id');
     socket.emit('agent_connect', room, user.name);
@@ -6,14 +34,14 @@ function setChatWindos(element){
     if (isMsgFormSet==false){
         setMsgForm($("#chat_window").height()-220);
     }
-
+    showAgentVideoContent();
     $.ajax({
         dataType    : "JSON",
         type        : "POST",
         url         : "/chat/chat-history/"+room,
         success     : function(res) {
             if (typeof res.response !== 'undefined' && Object.keys(res.response).length > 0) {
-                console.log(res.response);
+                //console.log(res.response);
                 res.response.forEach(element => {
                     appendMsg(element);
                 });
@@ -35,3 +63,13 @@ let setLoggedUser = (data) => {
         }
     }
 };
+
+// let showVideoContent = (openVideoWindow = false) => {
+//     if ($("#v_btn").hasClass('invisible')){
+//         $("#v_btn").removeClass('invisible');
+//     }
+//     if (openVideoWindow && $("#v_window").hasClass('invisible')){
+//         $("#v_window").removeClass('invisible');
+//         startVideo();
+//     }
+// };

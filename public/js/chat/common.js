@@ -1,3 +1,41 @@
+let room = '';
+let isMsgFormSet = false;
+let typing = false;
+let isVideoRequest = false;
+const video = document.querySelector('video');
+let socket = io();
+
+
+socket.on('chat_message', (user) => {
+    appendMsg(user);
+});
+
+socket.on('typing', (data) => {
+    if (data){
+        $("#typing").html(data);
+    } else {
+        $("#typing").html('');
+    }
+}); 
+
+socket.on('open_video_answer_window', () => {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+          console.log(result);
+        if (result.value) {
+            socket.on('proceed_video_call', room);
+        }
+      })
+});
+
+
 let sendMsg = () => {
     $('#send').click(function (e) {
         user.body = $('#message').val();
@@ -113,3 +151,18 @@ let setMsgForm = (height) => {
     sendTypingMsg();
     return isMsgFormSet = true;
 };
+
+let startVideo = () => {
+    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+    .then(async stream => {
+        await myExtFunction(stream);
+        if (isVideoRequest){
+            socket.emit('new_video_client', room, type);
+        }
+        video.srcObject = stream;
+        video.play();
+    })
+    .catch(err => {
+        console.log(err)
+    });
+}

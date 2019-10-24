@@ -1,7 +1,16 @@
 const express = require('express');
 const path = require('path');
 const app = express();
-const server = require('http').createServer(app);
+// const server = require('http').createServer(app);
+
+const fs = require('fs');
+const options = {
+    key: fs.readFileSync('./key.pem', 'utf8').toString(), 
+    cert: fs.readFileSync('./server.crt', 'utf8').toString() 
+}
+const server = require('https').createServer(options, app);
+
+
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const session = require('express-session');
