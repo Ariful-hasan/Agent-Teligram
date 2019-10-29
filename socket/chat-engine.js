@@ -132,6 +132,12 @@ module.exports = (app, io) => {
           console.log('video_request : '+room);
           client.to(room).emit("start_video");
         });
+
+        
+        // client.on('enable_disconnect_btn ', (room) => {
+        //   console.log('enable_disconnect_btn : '+room);
+        //   io.in(room).emit('show_disconnect_btn');
+        // });
       
       });
 }

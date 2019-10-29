@@ -8,24 +8,25 @@ socket.on('connect', () => {
 socket.on('start_video', () => {
     console.log('start_video in browser!!!!');
     //isVideoRequest = true;
-
+    // showClientVideoContent(true);
     Swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
+        title: '',
+        text: "Agent Calling you",
         type: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
+        confirmButtonText: 'Receive'
         }).then((result) => {
-            console.log(result);
+            //console.log(result);
         if (result.value) {
             isVideoRequest = true;
             showClientVideoContent(true);
+            console.log("disconnect btn is called in browser");
+            console.log(room);
+            //socket.emit('enable_disconnect_btn', room);
         }
         });
-   
-    // showClientVideoContent(true);
 });
 
 let showClientVideoContent = () => {

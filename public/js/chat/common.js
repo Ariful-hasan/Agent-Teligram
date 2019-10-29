@@ -1,4 +1,4 @@
-let room = '';
+// let room = '';
 let isMsgFormSet = false;
 let typing = false;
 let isVideoRequest = false;
@@ -18,22 +18,30 @@ socket.on('typing', (data) => {
     }
 }); 
 
-socket.on('open_video_answer_window', () => {
-    Swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
-      }).then((result) => {
-          console.log(result);
-        if (result.value) {
-            socket.on('proceed_video_call', room);
-        }
-      })
-});
+// socket.on('open_video_answer_window', () => {
+//     Swal.fire({
+//         title: 'Are you sure?',
+//         text: "You won't be able to revert this!",
+//         type: 'warning',
+//         showCancelButton: true,
+//         confirmButtonColor: '#3085d6',
+//         cancelButtonColor: '#d33',
+//         confirmButtonText: 'Yes, delete it!'
+//       }).then((result) => {
+//           console.log(result);
+//         if (result.value) {
+//             socket.on('proceed_video_call', room);
+//         }
+//       })
+// });
+
+
+
+// socket.on('show_disconnect_btn', () => {
+//     console.log('enable button is called....');
+//     let button = '<button type="button" class="btn btn-danger btn-vdo-close" onclick="mediaDisconnect()" >Call End</button>';
+//     $("#self_camera").append(button);
+// });
 
 
 let sendMsg = () => {
@@ -92,38 +100,30 @@ let appendMsg = (element) => {
         msgbox = '<div class="card bg-light-gray mb-2" id="'+element._id+'">';
         msgbox += '<div class="card-body">';
         msgbox += '<div class="row inline">';
-
         msgbox += '<div class="col-11 text-right">';
         msgbox += element.body;
         msgbox += '<small class="form-text text-muted mb-0">'+element.date+'</small>';
         msgbox += '</div>';
-        
         msgbox += '<div class="col-1 text-right">';
         msgbox += '<div class="name bg-secondary text-white mtn-1">';
-        //msgbox += element.name;
         msgbox += nick;
         msgbox += '</div>';
         msgbox += '</div>';
-
         msgbox += '</div>';
         msgbox += '</div>';
     } else {
         msgbox = '<div class="card bg-dark-gray other mb-1" id="'+element._id+'">';
         msgbox += '<div class="card-body">';
         msgbox += '<div class="row">';
-
         msgbox += '<div class="col-1 text-left">';
-        //msgbox += element.name;
         msgbox += '<div class="name bg-info text-white">';
         msgbox += nick;
         msgbox += '</div>';
         msgbox += '</div>';
-
         msgbox += '<div class="col-11 text-left">';
         msgbox += element.body;
         msgbox += '<small class="form-text text-muted mb-0">'+element.date+'</small>';
         msgbox += '</div>';
-
         msgbox += '</div>';
         msgbox += '</div>';
     }  
@@ -133,7 +133,7 @@ let appendMsg = (element) => {
 
 let setMsgForm = (height) => {
     let html = "";
-    html += '<div class="col-md-12 msg-field">';
+    html += '<div class="col-md-12 msg-field p-0">';
     html += '<form action="" method="POST">';
     html += '<small class="form-text text-muted text-right font-weight-bold" id="typing"></small>';
     html += '<div class="input-group mb-3">';
@@ -161,8 +161,17 @@ let startVideo = () => {
         }
         video.srcObject = stream;
         video.play();
+        $("#self_camera").append(mediaButton);
     })
     .catch(err => {
         console.log(err)
     });
+}
+
+let mediaButton = () => {
+    let media_btn = '<div class="btn-group btn-group-sm ml-3" role="group">';
+    media_btn += '<button type="button" class="btn btn-danger btn-vdo-close" onclick="mediaDisconnect()" >Call End</button>';
+    media_btn += '<button type="button" class="btn btn-secondary" onclick="mediaMute()" ><i class="fa fa-microphone-slash" aria-hidden="true"></i></button>';
+    media_btn += '</div>';
+    return media_btn;
 }

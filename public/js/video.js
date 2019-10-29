@@ -2,21 +2,17 @@ const Peer = require('simple-peer');
 const video = document.querySelector('video');
 let client = {};
 let stream = 'ami jomidar';
+let user_video = '';
 
 socket.on('CreatePeer', MakePeer);
 socket.on('BackOffer', FrontAnswer);
 socket.on('BackAnswer', SignalAnswer);
 
-// function startVideo() {
-//     navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-//     .then(stream => {
-//         stream = stream;
-//         socket.emit('new_video_client', room, user.name);
-//         video.srcObject = stream;
-//         video.play();
-//     })
-//     .catch(err => console.log(err));
-// }
+function error(Peer) {
+    Peer.on('error', err => {
+        console.log(err);
+    });
+}
 
 function InitPeer(type) {
     console.log('call from titans...');
@@ -30,11 +26,15 @@ function InitPeer(type) {
     
     // peer.on('data', function (data) {
     //     let decodedData = new TextDecoder('utf-8').decode(data)
-    //     let peervideo = document.querySelector('#peerVideo')
+    //     let peervideo = document.querySelector('#peerVideo')  
     //     peervideo.style.filter = decodedData
     // });
+
+    peer.on('close', () => {
+        console.log('peer is closed....');
+    });
     
-    console.log(peer);
+    //console.log(peer);
     return peer
 }
 
@@ -50,6 +50,7 @@ function MakePeer(type) {
                 socket.emit('Offer', room, data);
             }
         });
+        error(peer);
         return client.peer = peer
     }
    return false; 
@@ -65,6 +66,7 @@ function FrontAnswer(offer) {
         socket.emit('Answer', room, data);
     });
     peer.signal(offer);
+    error(peer);
     return client.peer = peer;
 }
 function SignalAnswer(answer) {
@@ -89,18 +91,51 @@ function CreateVideo(stream) {
     //wait for 1 sec
     //setTimeout(() => SendFilter(currentFilter), 1000)
 
-    video.addEventListener('click', () => {
-        if (video.volume != 0)
-            video.volume = 0
-        else
-            video.volume = 1
-    })
-
+    // video.addEventListener('click', () => {
+    //     if (video.volume != 0)
+    //         video.volume = 0
+    //     else
+    //         video.volume = 1
+    // })
+    user_video = video;
 }
+
+function mediaDisconnect() {
+    client.peer.destroy();
+    console.log('peer is destroyed....');
+}
+
+function mediaMute() {
+    console.log('user video data');
+    console.log(user_video);
+    try{
+        if (user_video.volume != 0){
+            user_video.volume = 0;
+        } else {
+            user_video.volume = 1;
+        }
+    } catch (e){
+        console.log(e);
+    }
+}
+
+// function mediaClose() {
+//     client.peer.on('close', () => {
+//         console.log('peer is destroyed....');
+//     });
+// }
 
 if (typeof window !== 'undefined') {
     window.myExtFunction = function(videostream) {
         stream = videostream;
+    }
+
+    window.mediaDisconnect = function () {
+        return mediaDisconnect();
+    }
+
+    window.mediaMute = function () {
+        return mediaMute();
     }
 }
 

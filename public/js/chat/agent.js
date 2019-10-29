@@ -26,6 +26,12 @@ let showAgentVideoContent = (openVideoWindow = false) => {
     }
 };
 
+let showAgentAudioContent = (openVideoWindow = false) => {
+    if ($("#c_btn").hasClass('invisible')) {
+        $("#c_btn").removeClass('invisible');
+    }
+};
+
 function setChatWindos(element){
     room = $(element).attr('id');
     socket.emit('agent_connect', room, user.name);
@@ -35,6 +41,7 @@ function setChatWindos(element){
         setMsgForm($("#chat_window").height()-220);
     }
     showAgentVideoContent();
+    showAgentAudioContent();
     $.ajax({
         dataType    : "JSON",
         type        : "POST",

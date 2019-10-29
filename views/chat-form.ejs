@@ -17,7 +17,7 @@
         <% } %>
 
 
-        <div class=" <%= data.type == 'U'? 'offset-md-2' : '' %> col-md-8">
+        <div class=" <%= data.type == 'U'? 'offset-md-2' : '' %> col-md-7 p-0">
             <div class="card window-height" id="chat_window">
                 <div class="card-header">
                     <div class="row">
@@ -30,9 +30,17 @@
                     </div>
                 </div>
                 <div class="card-body" id="sub_chat_window">
-                    <div class="card-subtitle text-right mr-3 invisible" id="v_btn" onclick="showAgentVideoContent(true)"><i class="fa fa-video-camera " aria-hidden="true"></i></div>
+                    <div class="card-subtitle text-right">
+                        <div class="btn-group">
+                            <% if (data.type == "A") { %>
+                                <button type="button" class="btn btn-warning invisible" id="c_btn" onclick="showAgentAudioContent(true)" ><i class="fa fa-phone" aria-hidden="true"></i></button>
+                                <button type="button" class="btn btn-primary invisible" id="v_btn" onclick="showAgentVideoContent(true)" ><i class="fa fa-video-camera" aria-hidden="true"></i></button>
+                            <% } %>
+                        </div> 
+                    </div>
+                    
                     <% if (data.userid) { %>
-                        <div class="col-md-12 mb-1">
+                        <div class="col-md-12 mb-1 p-0">
                             <div class="card">
                                 <div class="card-body">
                                     <div >
@@ -46,19 +54,19 @@
             </div>
         </div>
 
-        <div class="col-md-2 invisible" id="v_window">
+        <div class="col-md-3 invisible" id="v_window">
             <div class="card">
                 <div class="card-body">
                     <div class="col-12 d-flex justify-content-center p-0">
-                        <div class="embed-responsive embed-responsive-16by9 p-0">
+                        <div class="embed-responsive embed-responsive-16by9 p-0" id="self_camera">
                             <video class="embed-responsive-item p-0" muted></video>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <div class="card">
-                <div class="card-body">
+            <div class="card col-4" id="user_video_window">
+                <div class="card-body p-0">
                     <div class="col-12 d-flex justify-content-center p-0">
                         <div id="peerDiv" class="embed-responsive embed-responsive-16by9 p-0">
                         </div>
