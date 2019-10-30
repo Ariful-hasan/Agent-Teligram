@@ -1,7 +1,7 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="/css/chat/chat.css">
 
-<div class="row">
+<div class="row" id="main_window">
 
         <% if (data.type == "A") { %>
             <div class="col-md-2">
@@ -17,7 +17,7 @@
         <% } %>
 
 
-        <div class=" <%= data.type == 'U'? 'offset-md-2' : '' %> col-md-7 p-0">
+        <div class=" <%= data.type == 'U'? 'offset-md-2 col-md-7' : 'col-md-7' %>  p-0" id="m_chat_window">
             <div class="card window-height" id="chat_window">
                 <div class="card-header">
                     <div class="row">
@@ -54,27 +54,30 @@
             </div>
         </div>
 
-        <div class="col-md-3 invisible" id="v_window">
-            <div class="card">
-                <div class="card-body">
-                    <div class="col-12 d-flex justify-content-center p-0">
-                        <div class="embed-responsive embed-responsive-16by9 p-0" id="self_camera">
-                            <video class="embed-responsive-item p-0" muted></video>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="card col-4" id="user_video_window">
-                <div class="card-body p-0">
-                    <div class="col-12 d-flex justify-content-center p-0">
-                        <div id="peerDiv" class="embed-responsive embed-responsive-16by9 p-0">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <% //if (data.type == "A") { %>
+            <div class="col-md-3 invisible" id="v_window">
 
+                <!-- <div class="card" id="user_video_window">
+                    <div class="card-body p-0">
+                        <div class="col-12 d-flex justify-content-center p-0">
+                            <div id="peerDiv" class="embed-responsive embed-responsive-16by9 p-0">
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+
+                <div class="card p-0" id="self_video_window">
+                    <div class="card-body p-0">
+                        <div class="col-12 d-flex justify-content-center p-0">
+                            <div class="embed-responsive embed-responsive-16by9 p-0" id="self_camera">
+                                <video class="embed-responsive-item p-0" muted></video>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        <% //} %>
 
     </div>
 

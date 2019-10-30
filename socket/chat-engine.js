@@ -26,7 +26,7 @@ module.exports = (app, io) => {
         client.on("chat_join", (room, name) => {
           user_info.id = room;
           // user_info.name = data.name;
-          console.log(name);
+          console.log('chat_join '+name);
           if (rooms[room] != null){
               return false;
           }
@@ -58,6 +58,7 @@ module.exports = (app, io) => {
           //   console.log(err);
           // });
         });
+        
 
         
         client.on("send_chat_message", (room, user) => {
@@ -72,7 +73,7 @@ module.exports = (app, io) => {
             });
             chat.save(err => {
               if (err)
-              console.log();
+              console.log(err);
             });
             
         });
@@ -104,6 +105,9 @@ module.exports = (app, io) => {
             client.to(room).emit('typing', data);
         });
 
+        client.on("test_call", (room, data) => {
+          console.log('test call is called!!!!!!! ===='+data);
+        });
 
 
 
@@ -134,10 +138,7 @@ module.exports = (app, io) => {
         });
 
         
-        // client.on('enable_disconnect_btn ', (room) => {
-        //   console.log('enable_disconnect_btn : '+room);
-        //   io.in(room).emit('show_disconnect_btn');
-        // });
+        
       
       });
 }

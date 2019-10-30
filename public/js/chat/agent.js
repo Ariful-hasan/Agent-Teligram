@@ -26,11 +26,13 @@ let showAgentVideoContent = (openVideoWindow = false) => {
     }
 };
 
-let showAgentAudioContent = (openVideoWindow = false) => {
-    if ($("#c_btn").hasClass('invisible')) {
-        $("#c_btn").removeClass('invisible');
-    }
-};
+// let showAgentAudioContent = (openVideoWindow = false) => {
+//     startVideo(false);
+//     if ($("#c_btn").hasClass('invisible')) {
+//         $("#c_btn").removeClass('invisible');
+//     }
+//     socket.emit('video_request', room);
+// };
 
 function setChatWindos(element){
     room = $(element).attr('id');

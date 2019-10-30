@@ -161,17 +161,17 @@ let startVideo = () => {
         }
         video.srcObject = stream;
         video.play();
-        $("#self_camera").append(mediaButton);
+        //$("#self_camera").append(mediaButton);  //! use for won camera view
     })
     .catch(err => {
         console.log(err)
     });
 }
 
-let mediaButton = () => {
-    let media_btn = '<div class="btn-group btn-group-sm ml-3" role="group">';
-    media_btn += '<button type="button" class="btn btn-danger btn-vdo-close" onclick="mediaDisconnect()" >Call End</button>';
-    media_btn += '<button type="button" class="btn btn-secondary" onclick="mediaMute()" ><i class="fa fa-microphone-slash" aria-hidden="true"></i></button>';
-    media_btn += '</div>';
-    return media_btn;
-}
+// let mediaButton = () => {
+//     let media_btn = '<div class="btn-group btn-group-sm p-5 float-right" role="group">';
+//     media_btn += '<button type="button" class="btn btn-danger btn-vdo-close" onclick="mediaDisconnect()" >Call End</button>';
+//     media_btn += '<button type="button" class="btn btn-secondary" onclick="mediaMute()" ><i class="fa fa-microphone-slash" aria-hidden="true"></i></button>';
+//     media_btn += '</div>';
+//     return media_btn;
+// }

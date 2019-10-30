@@ -77,19 +77,27 @@ function SignalAnswer(answer) {
     peer.signal(answer);
 }
 
-function CreateVideo(stream) {
-    //CreateDiv()
+async function CreateVideo(stream) {
+    await user_video_div("v_window");
 
-    let video = document.createElement('video');
-    video.id = 'peerVideo';
+    $("#self_video_window").addClass('col-4')
+    let video = document.getElementById("peerVideo");
     video.srcObject = stream;
-    video.setAttribute('class', 'embed-responsive-item');
-    document.querySelector('#peerDiv').appendChild(video);
-    console.log(video);
     video.play();
-    
-    //wait for 1 sec
-    //setTimeout(() => SendFilter(currentFilter), 1000)
+    $("#peerDiv").append(mediaButton); //! use for user-camera view
+    user_video = video;
+
+
+    //!! its working one...
+    // let video = document.createElement('video');
+    // video.id = 'peerVideo';
+    // video.srcObject = stream;
+    // video.setAttribute('class', 'embed-responsive-item');
+    // document.querySelector('#peerDiv').appendChild(video);
+    // video.play();
+    // $("#peerDiv").append(mediaButton); //! use for user-camera view
+    // user_video = video;
+
 
     // video.addEventListener('click', () => {
     //     if (video.volume != 0)
@@ -97,7 +105,6 @@ function CreateVideo(stream) {
     //     else
     //         video.volume = 1
     // })
-    user_video = video;
 }
 
 function mediaDisconnect() {
@@ -119,11 +126,27 @@ function mediaMute() {
     }
 }
 
-// function mediaClose() {
-//     client.peer.on('close', () => {
-//         console.log('peer is destroyed....');
-//     });
-// }
+let mediaButton = () => {
+    let media_btn = '<div class="btn-group btn-group-sm p-5" role="group">';
+    media_btn += '<button type="button" class="btn btn-danger btn-vdo-close" onclick="mediaDisconnect()" >Call End</button>';
+    media_btn += '<button type="button" class="btn btn-secondary" onclick="mediaMute()" ><i class="fa fa-microphone-slash" aria-hidden="true"></i></button>';
+    media_btn += '</div>';
+    return media_btn;
+}
+
+let user_video_div = (apendElement) => {
+    let html = '';
+    html += '<div class="card" id="user_video_window">';
+    html += '<div class="card-body p-0">';
+    html += '<div class="col-12 d-flex justify-content-center p-0">';
+    html += '<div id="peerDiv" class="embed-responsive embed-responsive-16by9 p-0">';
+    html += '<video id="peerVideo" class="embed-responsive-item"></video>';
+    html += '</div>';
+    html += '</div>';
+    html += '</div>';
+    html += '</div>';
+    $("#"+apendElement).append(html);
+};
 
 if (typeof window !== 'undefined') {
     window.myExtFunction = function(videostream) {
@@ -136,6 +159,10 @@ if (typeof window !== 'undefined') {
 
     window.mediaMute = function () {
         return mediaMute();
+    }
+
+    window.mediaButton = function () {
+        return mediaButton();
     }
 }
 
