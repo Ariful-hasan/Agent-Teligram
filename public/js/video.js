@@ -32,6 +32,7 @@ function InitPeer(type) {
 
     peer.on('close', () => {
         console.log('peer is closed....');
+        socket.emit('media_closed', room);
     });
     
     //console.log(peer);

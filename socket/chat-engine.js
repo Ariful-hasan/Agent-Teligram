@@ -138,14 +138,18 @@ module.exports = (app, io) => {
         });
 
         
-        
-        
         /**
          * Audio Call
          */
         client.on('audio_request', (room) => {
           console.log('audio_request : '+room);
           client.to(room).emit("start_audio");
+        });
+
+
+        client.on('media_closed', (room) => {
+          console.log('media_closed : '+room);
+          client.emit('close_media_window');
         });
 
 

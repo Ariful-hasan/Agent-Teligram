@@ -8077,6 +8077,7 @@ function InitPeer(type) {
 
     peer.on('close', () => {
         console.log('peer is closed....');
+        socket.emit('media_closed', room);
     });
     
     //console.log(peer);
@@ -8132,7 +8133,6 @@ async function CreateVideo(stream) {
     // $("#peerDiv").append(mediaButton); //! use for user-camera view
     // user_video = video;
 
-
     //!! its working one...
     $("#self_video_window").addClass('col-4');
     let video = document.createElement('video');
@@ -8143,14 +8143,6 @@ async function CreateVideo(stream) {
     video.play();
     $("#peerDiv").append(mediaButton); //! use for user-camera view
     user_video = video;
-
-
-    // video.addEventListener('click', () => {
-    //     if (video.volume != 0)
-    //         video.volume = 0
-    //     else
-    //         video.volume = 1
-    // })
 }
 
 function mediaDisconnect() {

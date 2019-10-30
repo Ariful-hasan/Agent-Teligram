@@ -10,6 +10,17 @@ socket.on('chat_message', (user) => {
     appendMsg(user);
 });
 
+
+socket.on('close_media_window', () => {
+    Swal.fire({
+        type: 'error',
+        title: '',
+        text: 'Call Disconnected!',
+        footer: ''
+      })
+    $("#v_window").addClass('invisible');
+});
+
 socket.on('typing', (data) => {
     if (data){
         $("#typing").html(data);
