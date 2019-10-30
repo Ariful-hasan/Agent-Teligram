@@ -38,6 +38,34 @@ let showClientVideoContent = () => {
 };
 
 
+
+socket.on('start_audio', () => {
+    Swal.fire({
+        title: '',
+        text: "Agent Calling you",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Receive'
+        }).then(async (result) => {
+        if (result.value) {
+            isAudioRequest = true;
+            showClientAudioContent();
+        }
+        });
+});
+
+let showClientAudioContent = () => {
+    if ($("#v_window").hasClass('invisible')) {
+        $("#v_window").removeClass('invisible');
+        $("#self_video_window").addClass('invisible');
+        console.log('test_call before');
+        startVideo(false);     
+    }
+};
+
+
 // let setCLientVideoWindow = () => {
 //     let html = '';
 //     html += '<div class="col-md-3" id="v_window">';

@@ -80,31 +80,23 @@ function SignalAnswer(answer) {
 async function CreateVideo(stream) {
     await user_video_div("v_window");
 
-    $("#self_video_window").addClass('col-4')
-    let video = document.getElementById("peerVideo");
-    video.srcObject = stream;
-    video.play();
-    $("#peerDiv").append(mediaButton); //! use for user-camera view
-    user_video = video;
-
-
-    //!! its working one...
-    // let video = document.createElement('video');
-    // video.id = 'peerVideo';
+    // $("#self_video_window").addClass('col-4')
+    // let video = document.getElementById("peerVideo");
     // video.srcObject = stream;
-    // video.setAttribute('class', 'embed-responsive-item');
-    // document.querySelector('#peerDiv').appendChild(video);
     // video.play();
     // $("#peerDiv").append(mediaButton); //! use for user-camera view
     // user_video = video;
 
-
-    // video.addEventListener('click', () => {
-    //     if (video.volume != 0)
-    //         video.volume = 0
-    //     else
-    //         video.volume = 1
-    // })
+    //!! its working one...
+    $("#self_video_window").addClass('col-4');
+    let video = document.createElement('video');
+    video.id = 'peerVideo';
+    video.srcObject = stream;
+    video.setAttribute('class', 'embed-responsive-item');
+    document.querySelector('#peerDiv').appendChild(video);
+    video.play();
+    $("#peerDiv").append(mediaButton); //! use for user-camera view
+    user_video = video;
 }
 
 function mediaDisconnect() {
@@ -140,7 +132,7 @@ let user_video_div = (apendElement) => {
     html += '<div class="card-body p-0">';
     html += '<div class="col-12 d-flex justify-content-center p-0">';
     html += '<div id="peerDiv" class="embed-responsive embed-responsive-16by9 p-0">';
-    html += '<video id="peerVideo" class="embed-responsive-item"></video>';
+    //html += '<video id="peerVideo" class="embed-responsive-item"></video>';
     html += '</div>';
     html += '</div>';
     html += '</div>';

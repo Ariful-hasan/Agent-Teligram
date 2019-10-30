@@ -1,7 +1,7 @@
-// let room = '';
 let isMsgFormSet = false;
 let typing = false;
 let isVideoRequest = false;
+let isAudioRequest = false;
 const video = document.querySelector('video');
 let socket = io();
 
@@ -152,11 +152,14 @@ let setMsgForm = (height) => {
     return isMsgFormSet = true;
 };
 
-let startVideo = () => {
-    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+let startVideo = (vdo=true) => {
+    navigator.mediaDevices.getUserMedia({ video: vdo, audio: true })
     .then(async stream => {
         await myExtFunction(stream);
         if (isVideoRequest){
+            socket.emit('new_video_client', room, type);
+        }
+        if (!isVideoRequest && isAudioRequest){
             socket.emit('new_video_client', room, type);
         }
         video.srcObject = stream;
@@ -167,11 +170,3 @@ let startVideo = () => {
         console.log(err)
     });
 }
-
-// let mediaButton = () => {
-//     let media_btn = '<div class="btn-group btn-group-sm p-5 float-right" role="group">';
-//     media_btn += '<button type="button" class="btn btn-danger btn-vdo-close" onclick="mediaDisconnect()" >Call End</button>';
-//     media_btn += '<button type="button" class="btn btn-secondary" onclick="mediaMute()" ><i class="fa fa-microphone-slash" aria-hidden="true"></i></button>';
-//     media_btn += '</div>';
-//     return media_btn;
-// }

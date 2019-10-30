@@ -1,11 +1,22 @@
 $("#msg_list").height($("#chat_window").height()-120);
 
+//!!Video Call
 $("#v_btn").on('click', () => {
     startVideo();
     if ($("#v_window").hasClass('invisible')) {
         $("#v_window").removeClass('invisible');
     }
     socket.emit('video_request', room);
+});
+
+//!!Audio Call
+$("#c_btn").on('click', () => {
+    startVideo(false);
+    if ($("#v_window").hasClass('invisible')) {
+        $("#v_window").removeClass('invisible');
+        $("#self_video_window").addClass('invisible');
+    }
+    socket.emit('audio_request', room);
 });
 
 socket.on('connect', () => {  
@@ -26,13 +37,11 @@ let showAgentVideoContent = (openVideoWindow = false) => {
     }
 };
 
-// let showAgentAudioContent = (openVideoWindow = false) => {
-//     startVideo(false);
-//     if ($("#c_btn").hasClass('invisible')) {
-//         $("#c_btn").removeClass('invisible');
-//     }
-//     socket.emit('video_request', room);
-// };
+let showAgentAudioContent = (openVideoWindow = false) => {
+    if ($("#c_btn").hasClass('invisible')) {
+        $("#c_btn").removeClass('invisible');
+    }
+};
 
 function setChatWindos(element){
     room = $(element).attr('id');

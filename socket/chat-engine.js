@@ -105,9 +105,9 @@ module.exports = (app, io) => {
             client.to(room).emit('typing', data);
         });
 
-        client.on("test_call", (room, data) => {
-          console.log('test call is called!!!!!!! ===='+data);
-        });
+        // client.on("test_call", (room, data) => {
+        //   console.log('test call is called!!!!!!! ===='+data);
+        // });
 
 
 
@@ -139,6 +139,15 @@ module.exports = (app, io) => {
 
         
         
-      
+        
+        /**
+         * Audio Call
+         */
+        client.on('audio_request', (room) => {
+          console.log('audio_request : '+room);
+          client.to(room).emit("start_audio");
+        });
+
+
       });
 }
