@@ -4,7 +4,7 @@ const Chat = require('../models/chatModel');
 const rooms = { };
 
 module.exports = (app, io) => {
-    // let vclients = 0;
+
     io.on("connection", (client)=> {
       let clientID = client.id;
       let client_browser_info = useragent.parse(client.handshake.headers['user-agent']);
@@ -17,46 +17,21 @@ module.exports = (app, io) => {
         console.log(error);
       });
 
-      client.on('setSocketId', function(data) {
-        var userName = data.name;
-        var userId = data.userId;
-        //console.log(userName);
-      });
+      // client.on('setSocketId', function(data) {
+      //   var userName = data.name;
+      //   var userId = data.userId;
+      //   console.log(userName);
+      // });
 
         client.on("chat_join", (room, name) => {
           user_info.id = room;
-          // user_info.name = data.name;
           console.log('chat_join '+name);
           if (rooms[room] != null){
               return false;
           }
-          //console.log('room id what');
           rooms[room] = name;
-          //console.log(rooms);
           client.join(room);
           client.broadcast.emit("logged_user", rooms);
-
-
-
-          // client.broadcast.emit("logged_user", user_info);
-          // OnlineUser.findOne({userid: data.user_id})
-          // .then(user => {
-          //   if (!user){
-          //       new OnlineUser({
-          //         name: data.name,
-          //         userid: data.user_id,
-          //       }).save(err => {
-          //         if (err){
-          //           console.log(err);
-          //         }else {
-          //           console.log("online data save");
-          //         }
-          //       })
-          //   }
-          // })
-          // .catch (err => {
-          //   console.log(err);
-          // });
         });
         
 
@@ -150,6 +125,15 @@ module.exports = (app, io) => {
         client.on('media_closed', (room) => {
           console.log('media_closed : '+room);
           client.emit('close_media_window');
+        });
+
+        client.on('stop_ringtone', (room) => {
+          console.log('stop_ringtone : '+room);
+          client.emit('unload_ringtone');
+        });
+        client.on('call_busy_disconnect', (room) => {
+          console.log('call_busy_disconnect : '+room);
+          client.to(room).emit('busy_user', "user busy!!");
         });
 
 

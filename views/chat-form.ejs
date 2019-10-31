@@ -29,12 +29,12 @@
                         <% } %>
                     </div>
                 </div>
-                <div class="card-body" id="sub_chat_window">
+                <div class="card-body pt-2" id="sub_chat_window">
                     <div class="card-subtitle text-right">
                         <div class="btn-group">
                             <% if (data.type == "A") { %>
-                                <button type="button" class="btn btn-warning invisible" id="c_btn" onclick="showAgentAudioContent(true)" ><i class="fa fa-phone" aria-hidden="true"></i></button>
-                                <button type="button" class="btn btn-primary invisible" id="v_btn" onclick="showAgentVideoContent(true)" ><i class="fa fa-video-camera" aria-hidden="true"></i></button>
+                                <button type="button" title="make audio call" class="btn btn-sm btn-warning invisible" id="c_btn" onclick="showAgentAudioContent(true)" ><i class="fa fa-phone" aria-hidden="true"></i></button>
+                                <button type="button" title="make video call" class="btn btn-xs btn-primary invisible" id="v_btn" onclick="showAgentVideoContent(true)" ><i class="fa fa-video-camera" aria-hidden="true"></i></button>
                             <% } %>
                         </div> 
                     </div>

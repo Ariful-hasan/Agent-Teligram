@@ -5,11 +5,14 @@ let isAudioRequest = false;
 const video = document.querySelector('video');
 let socket = io();
 
+// window.onload = () => {
+//     var audioCtx = new AudioContext();
+//     audioCtx.close();
+// };
 
 socket.on('chat_message', (user) => {
     appendMsg(user);
 });
-
 
 socket.on('close_media_window', () => {
     Swal.fire({
@@ -18,16 +21,23 @@ socket.on('close_media_window', () => {
         text: 'Call Disconnected!',
         footer: ''
       })
-    $("#v_window").addClass('invisible');
+    //$("#v_window").addClass('invisible');
+    clearOwnVideo();
 });
 
 socket.on('typing', (data) => {
     if (data){
         $("#typing").html(data);
     } else {
-        $("#typing").html('');
+        $("#typing").html('');   
     }
 }); 
+
+let clearOwnVideo = () => {
+    $("#self_video_window").removeClass('col-4');
+    $("#self_camera").find('video').attr('src','');
+    $("#v_window").addClass('invisible');
+};
 
 // socket.on('open_video_answer_window', () => {
 //     Swal.fire({
@@ -45,15 +55,6 @@ socket.on('typing', (data) => {
 //         }
 //       })
 // });
-
-
-
-// socket.on('show_disconnect_btn', () => {
-//     console.log('enable button is called....');
-//     let button = '<button type="button" class="btn btn-danger btn-vdo-close" onclick="mediaDisconnect()" >Call End</button>';
-//     $("#self_camera").append(button);
-// });
-
 
 let sendMsg = () => {
     $('#send').click(function (e) {
@@ -164,6 +165,9 @@ let setMsgForm = (height) => {
 };
 
 let startVideo = (vdo=true) => {
+    if ($("#self_video_window").hasClass('invisible')){
+        $("#self_video_window").removeClass('invisible')
+    }
     navigator.mediaDevices.getUserMedia({ video: vdo, audio: true })
     .then(async stream => {
         await myExtFunction(stream);
@@ -181,3 +185,28 @@ let startVideo = (vdo=true) => {
         console.log(err)
     });
 }
+
+let alertMessage = (type='error',title='', msg='') => {
+    Swal.fire({
+        type: type,
+        title: title,
+        text: msg,
+        footer: ''
+      });
+};
+
+let hideVideoWidow = () => {
+    if (!$("#v_window").hasClass('invisible')) {
+        console.log('video colse....');
+        video.pause();
+        video.removeAttribute('src');
+        video.load();
+        $("#v_window").addClass('invisible');
+    } else {
+        console.log('video not colse....');
+    }
+};
+
+
+
+

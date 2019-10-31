@@ -1,4 +1,5 @@
 const Peer = require('simple-peer');
+const Howl = require('howler');
 const video = document.querySelector('video');
 let client = {};
 let stream = 'ami jomidar';
@@ -33,6 +34,7 @@ function InitPeer(type) {
     peer.on('close', () => {
         console.log('peer is closed....');
         socket.emit('media_closed', room);
+        clearPeerVideo();
     });
     
     //console.log(peer);
@@ -89,6 +91,7 @@ async function CreateVideo(stream) {
     // user_video = video;
 
     //!! its working one...
+    socket.emit('stop_ringtone', room);
     $("#self_video_window").addClass('col-4');
     let video = document.createElement('video');
     video.id = 'peerVideo';
@@ -141,6 +144,10 @@ let user_video_div = (apendElement) => {
     $("#"+apendElement).append(html);
 };
 
+let clearPeerVideo = () => {
+    $("#user_video_window").remove();
+};
+
 if (typeof window !== 'undefined') {
     window.myExtFunction = function(videostream) {
         stream = videostream;
@@ -157,5 +164,9 @@ if (typeof window !== 'undefined') {
     window.mediaButton = function () {
         return mediaButton();
     }
+
+    // window.ringtone = function () {
+    //     return ringtone;
+    // }
 }
 

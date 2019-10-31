@@ -1,12 +1,17 @@
-$("#msg_list").height($("#chat_window").height()-120);
+$("#msg_list").height($("#chat_window").height()-220);
 
-//!!Video Call
+let ringtone = new Howl({
+    src: ['../ringtone/ringtone.mp3']
+}); 
+
+//! Video Call
 $("#v_btn").on('click', () => {
     startVideo();
     if ($("#v_window").hasClass('invisible')) {
         $("#v_window").removeClass('invisible');
     }
     socket.emit('video_request', room);
+    ringtone.play();
 });
 
 //!!Audio Call
@@ -17,6 +22,7 @@ $("#c_btn").on('click', () => {
         $("#self_video_window").addClass('invisible');
     }
     socket.emit('audio_request', room);
+    ringtone.play();
 });
 
 socket.on('connect', () => {  
@@ -29,6 +35,17 @@ socket.on('logged_user', (data) => {
 
 socket.on('online_users', (data) => {
     setLoggedUser(data); 
+});
+
+socket.on('unload_ringtone', () => {
+    ringtone.stop();
+});
+
+socket.on('busy_user', (msg) => {
+    console.log('busy is called......');
+    ringtone.stop();
+    alertMessage('error', '', msg);
+    hideVideoWidow();
 });
 
 let showAgentVideoContent = (openVideoWindow = false) => {

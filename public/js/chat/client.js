@@ -2,6 +2,7 @@ $("#msg_list").height($("#chat_window").height()-220);
 setMsgForm($("#chat_window").height()-240);
 
 socket.on('connect', () => {  
+    console.log('hiiiii socket connect');
     socket.emit("chat_join", user.userid, user.name);
 });
 
@@ -9,6 +10,18 @@ socket.on('start_video', () => {
     //console.log('start_video in browser!!!!');
     //isVideoRequest = true;
     // showClientVideoContent(true);
+     
+    // let ringtone = new Howl({
+    //     src: ['../ringtone/ringtone.mp3'],
+    //     //autoplay: true,
+    //     loop: true,
+    //     volume: 1,
+    //     onend: function() {
+    //         console.log('Finished!');
+    //     }
+    // });
+
+    ringtone.play();
     Swal.fire({
         title: '',
         text: "Agent Calling you",
@@ -17,14 +30,15 @@ socket.on('start_video', () => {
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
         confirmButtonText: 'Receive'
-        }).then(async (result) => {
-        if (result.value) {
-            //await setCLientVideoWindow();
-            isVideoRequest = true;
-            showClientVideoContent(true);
-            //console.log("disconnect btn is called in browser");
-            //console.log(room);
-        }
+        }).then((result) => {
+            if (result.value) {
+                isVideoRequest = true;
+                showClientVideoContent(true);          
+            } else {
+                socket.emit("call_busy_disconnect", room, "THANOS");
+            }
+            console.log('ignore call....');
+            ringtone.stop();    
         });
 });
 
@@ -32,7 +46,7 @@ let showClientVideoContent = () => {
     if ($("#v_window").hasClass('invisible')) {
         $("#v_window").removeClass('invisible');
         console.log('test_call before');
-        socket.emit("test_call", room, "THANOS");
+        //socket.emit("test_call", room, "THANOS");
         startVideo();     
     }
 };
@@ -40,6 +54,7 @@ let showClientVideoContent = () => {
 
 
 socket.on('start_audio', () => {
+    ringtone.play();
     Swal.fire({
         title: '',
         text: "Agent Calling you",
@@ -48,11 +63,15 @@ socket.on('start_audio', () => {
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
         confirmButtonText: 'Receive'
-        }).then(async (result) => {
-        if (result.value) {
-            isAudioRequest = true;
-            showClientAudioContent();
-        }
+        }).then((result) => {
+            if (result.value) {
+                isAudioRequest = true;
+                showClientAudioContent();
+            } else {
+                socket.emit("call_busy_disconnect", room, "THANOS");
+            }
+            console.log('ignore call....');
+            ringtone.stop();
         });
 });
 
@@ -61,9 +80,35 @@ let showClientAudioContent = () => {
         $("#v_window").removeClass('invisible');
         $("#self_video_window").addClass('invisible');
         console.log('test_call before');
-        startVideo(false);     
+        startVideo(false);         
     }
 };
+
+//$(document).ready(function(){
+let ringtone = new Howl({
+        src: ["../ringtone/ringtone.mp3"],
+        //autoplay: true,
+        loop: true,
+        volume: 1,
+        onend: function() {
+            console.log("Finished!");
+        }
+    });
+//})
+
+
+
+// let ringtone = () => {
+//     return new Howl({
+//         src: ['../ringtone/ringtone.mp3'],
+//         //autoplay: true,
+//         loop: true,
+//         volume: 1,
+//         onend: function() {
+//             console.log('Finished!');
+//         }
+//     });
+// };
 
 
 // let setCLientVideoWindow = () => {
