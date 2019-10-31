@@ -2,7 +2,7 @@ $("#msg_list").height($("#chat_window").height()-220);
 setMsgForm($("#chat_window").height()-240);
 
 socket.on('connect', () => {  
-    console.log('hiiiii socket connect');
+    //console.log('hiiiii socket connect');
     socket.emit("chat_join", user.userid, user.name);
 });
 
@@ -25,11 +25,12 @@ socket.on('start_video', () => {
     Swal.fire({
         title: '',
         text: "Agent Calling you",
-        type: 'warning',
+        //type: 'warning',
+        imageUrl: '../ringtone/call.gif',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Receive'
+        confirmButtonText: 'Answer'
         }).then((result) => {
             if (result.value) {
                 isVideoRequest = true;
