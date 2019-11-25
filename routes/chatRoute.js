@@ -6,6 +6,6 @@ const chatController = require('../controllers/chatController');
 
 router.get('/', ensureAuthenticated, chatController.index);
 router.post('/chat-history/:uid', ensureAuthenticated, chatController.clientChatHistory);
-// router.post('/chat-history/:uid', ensureAuthenticated, ()=> { console.log('it is called!!!!!!')});
+router.use('/chat-agent/', ensureAuthenticated, chatController.chatAgent);
 
 module.exports = router;

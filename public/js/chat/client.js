@@ -7,19 +7,6 @@ socket.on('connect', () => {
 });
 
 socket.on('start_video', () => {
-    //console.log('start_video in browser!!!!');
-    //isVideoRequest = true;
-    // showClientVideoContent(true);
-     
-    // let ringtone = new Howl({
-    //     src: ['../ringtone/ringtone.mp3'],
-    //     //autoplay: true,
-    //     loop: true,
-    //     volume: 1,
-    //     onend: function() {
-    //         console.log('Finished!');
-    //     }
-    // });
 
     ringtone.play();
     Swal.fire({
@@ -85,31 +72,16 @@ let showClientAudioContent = () => {
     }
 };
 
-//$(document).ready(function(){
+
 let ringtone = new Howl({
-        src: ["../ringtone/ringtone.mp3"],
-        //autoplay: true,
-        loop: true,
-        volume: 1,
-        onend: function() {
-            console.log("Finished!");
-        }
-    });
-//})
-
-
-
-// let ringtone = () => {
-//     return new Howl({
-//         src: ['../ringtone/ringtone.mp3'],
-//         //autoplay: true,
-//         loop: true,
-//         volume: 1,
-//         onend: function() {
-//             console.log('Finished!');
-//         }
-//     });
-// };
+    src: ["../ringtone/ringtone.mp3"],
+    //autoplay: true,
+    loop: true,
+    volume: 1,
+    onend: function() {
+        console.log("Finished!");
+    }
+});
 
 
 // let setCLientVideoWindow = () => {
