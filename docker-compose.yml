@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/app/Dockerfile
+    container_name: agent-teligram-app
+    restart: always
+    ports:
+      - "4444:4444"
+    env_file:
+      - .env
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/testexp
+      - PORT=4444
+    volumes:
+      - ./key.pem:/usr/src/app/key.pem
+      - ./server.crt:/usr/src/app/server.crt
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo:latest
+    container_name: agent-teligram-db
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+volumes:
+  mongodb_data:
