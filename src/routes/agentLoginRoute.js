@@ -1,0 +1,9 @@
+const express = require('express');
+const router = express.Router();
+const { forwardAuthenticated } = require('../middlewares/auth');
+const loginController = require('../controllers/loginController');
+
+router.get('/login', forwardAuthenticated, loginController.getAgentLogin);
+router.post('/login', loginController.postAgentLogin);
+
+module.exports = router;
