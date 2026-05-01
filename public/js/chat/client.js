@@ -7,12 +7,12 @@ socket.on('connect', () => {
 });
 
 socket.on('start_video', () => {
-
+    // Attempt to play ringtone, catch if autoplay is blocked
     ringtone.play();
+    
     Swal.fire({
         title: '',
         text: "Agent Calling you",
-        //type: 'warning',
         imageUrl: '../ringtone/call.gif',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
